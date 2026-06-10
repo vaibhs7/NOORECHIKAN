@@ -133,7 +133,12 @@ const ScrollEmbroidery = () => {
 
   return (
     <section ref={ref} className="relative py-32 bg-[#FFFEF9] overflow-hidden grain-overlay">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      {/* Lotus painting as subtle full-bleed background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-[0.06]"
+        style={{ backgroundImage: "url('/images/lotus-painting.jpg')" }}
+      />
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* SVG */}
           <motion.div style={{ opacity }} className="relative flex justify-center">
@@ -195,11 +200,36 @@ const ScrollEmbroidery = () => {
 /* ─── Collections Grid ────────────────────────────────────── */
 const CollectionsGrid = () => {
   const collectionData = [
-    { id: 'kurtas', name: 'Kurtas', desc: 'Timeless elegance in every thread', color: 'from-amber-900 via-amber-800 to-orange-900', accent: '#8B4513' },
-    { id: 'sarees', name: 'Sarees', desc: 'Six yards of heritage and grace', color: 'from-emerald-900 via-teal-800 to-green-900', accent: '#2D5016' },
-    { id: 'dupattas', name: 'Dupattas', desc: 'The finishing touch of artistry', color: 'from-indigo-900 via-purple-800 to-violet-900', accent: '#3B2D6B' },
-    { id: 'suit-sets', name: 'Suit Sets', desc: 'Complete ensembles of Nawabi splendor', color: 'from-rose-900 via-red-800 to-pink-900', accent: '#6B1A2D' },
-    { id: 'kurtis', name: 'Kurtis', desc: 'Everyday luxury, effortlessly worn', color: 'from-slate-800 via-gray-700 to-zinc-800', accent: '#3D3D3D' },
+    {
+      id: 'kurtas', name: 'Kurtas', desc: 'Timeless elegance in every thread',
+      color: 'from-amber-900/80 via-amber-800/70 to-orange-900/80',
+      fallback: 'from-amber-900 via-amber-800 to-orange-900',
+      img: '/images/mughal-palace.jpg',
+    },
+    {
+      id: 'sarees', name: 'Sarees', desc: 'Six yards of heritage and grace',
+      color: 'from-[#1a3a1a]/85 via-[#2d5a2d]/70 to-[#0d2a0d]/85',
+      fallback: 'from-emerald-900 via-teal-800 to-green-900',
+      img: '/images/botanical-panels.jpg',
+    },
+    {
+      id: 'dupattas', name: 'Dupattas', desc: 'The finishing touch of artistry',
+      color: 'from-[#3a0a0a]/85 via-[#6b1a1a]/70 to-[#1a0505]/85',
+      fallback: 'from-red-900 via-rose-800 to-red-950',
+      img: '/images/lotus-painting.jpg',
+    },
+    {
+      id: 'suit-sets', name: 'Suit Sets', desc: 'Complete ensembles of Nawabi splendor',
+      color: 'from-[#2a1a0a]/85 via-[#4a2e10]/70 to-[#1a0e00]/85',
+      fallback: 'from-amber-950 via-yellow-900 to-orange-950',
+      img: '/images/mughal-arch.jpg',
+    },
+    {
+      id: 'kurtis', name: 'Kurtis', desc: 'Everyday luxury, effortlessly worn',
+      color: 'from-slate-900/85 via-slate-800/70 to-zinc-900/85',
+      fallback: 'from-slate-800 via-gray-700 to-zinc-800',
+      img: null,
+    },
   ];
 
   return (
@@ -215,30 +245,24 @@ const CollectionsGrid = () => {
           {collectionData.map((cat, i) => (
             <AnimatedSection key={cat.id} delay={i * 0.1}>
               <Link to={`/category/${cat.id}`} className="group block">
-                <div className={`relative overflow-hidden aspect-[2/3] bg-gradient-to-b ${cat.color}`}>
-                  {/* Decorative SVG */}
-                  <svg viewBox="0 0 200 300" className="absolute inset-0 w-full h-full opacity-20" fill="none">
-                    <circle cx="100" cy="150" r="60" stroke="white" strokeWidth="0.5" />
-                    <circle cx="100" cy="150" r="35" stroke="white" strokeWidth="0.5" />
-                    {[0, 60, 120, 180, 240, 300].map(a => (
-                      <line key={a} x1="100" y1="150"
-                        x2={100 + 60 * Math.cos(a * Math.PI / 180)}
-                        y2={150 + 60 * Math.sin(a * Math.PI / 180)}
-                        stroke="white" strokeWidth="0.3" />
-                    ))}
-                    <circle cx="100" cy="90" r="12" stroke="white" strokeWidth="0.5" />
-                    <circle cx="140" cy="150" r="10" stroke="white" strokeWidth="0.5" />
-                    <circle cx="100" cy="210" r="12" stroke="white" strokeWidth="0.5" />
-                    <circle cx="60" cy="150" r="10" stroke="white" strokeWidth="0.5" />
-                  </svg>
+                <div className={`relative overflow-hidden aspect-[2/3] bg-gradient-to-b ${cat.fallback}`}>
+                  {/* Real image background */}
+                  {cat.img && (
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                      style={{ backgroundImage: `url(${cat.img})` }}
+                    />
+                  )}
+                  {/* Dark gradient overlay for text legibility */}
+                  <div className={`absolute inset-0 bg-gradient-to-t ${cat.color}`} />
 
                   {/* Hover gold border */}
-                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#C9943A] transition-all duration-500" />
+                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#C9943A] transition-all duration-500 z-10" />
 
                   {/* Content */}
-                  <div className="absolute inset-0 flex flex-col justify-end p-5">
+                  <div className="absolute inset-0 z-10 flex flex-col justify-end p-5">
                     <h3 className="font-cormorant text-2xl text-white font-light mb-1">{cat.name}</h3>
-                    <p className="font-inter text-[11px] text-white/60 mb-3 leading-relaxed hidden lg:block">{cat.desc}</p>
+                    <p className="font-inter text-[11px] text-white/70 mb-3 leading-relaxed hidden lg:block">{cat.desc}</p>
                     <span className="font-inter text-[10px] tracking-[0.25em] uppercase text-[#C9943A] flex items-center gap-2 group-hover:gap-3 transition-all duration-300">
                       Explore <ArrowRight size={10} />
                     </span>
@@ -300,21 +324,29 @@ const TimelineSection = () => {
       period: '17th Century',
       title: 'The Mughal Origins',
       text: "Legend attributes Chikankari to Nur Jahan, the beloved empress of Emperor Jahangir. She is said to have introduced this delicate embroidery to the Mughal court in Lucknow, teaching the craft to local artisans as a form of royal patronage.",
+      img: '/images/rumi-darwaza.jpg',
+      imgAlt: 'Rumi Darwaza, Lucknow',
     },
     {
       period: '18th Century',
       title: 'The Golden Age',
       text: "Under the Nawabs of Awadh, Chikankari flourished into its golden era. The Nawabi court's obsession with refinement elevated this craft to an art form, with hundreds of artisans employed in royal karkhanas (workshops) producing pieces of extraordinary beauty.",
+      img: '/images/mughal-arch.jpg',
+      imgAlt: 'Nawabi Mughal Architecture',
     },
     {
       period: '19th Century',
       title: 'Through Resilience',
       text: "The dissolution of the Nawabi kingdom brought hardship, but the artisans persisted. Chikankari moved from royal workshops to domestic cottage industries, passing from mothers to daughters, preserving every stitch name and technique through oral tradition.",
+      img: '/images/botanical-panels.jpg',
+      imgAlt: 'Botanical Chikankari Panels',
     },
     {
       period: '21st Century',
       title: 'Noor-e-Chikan',
       text: "We carry this legacy forward. Noor-e-Chikan was born to honor the artisans of Lucknow — to ensure their craft not only survives but thrives in the modern world, connecting ancient hands to contemporary hearts across the globe.",
+      img: '/images/lotus-painting.jpg',
+      imgAlt: 'Lotus — symbol of Noor-e-Chikan',
     },
   ];
 
@@ -331,19 +363,35 @@ const TimelineSection = () => {
           {/* Center line */}
           <div className="absolute left-1/2 top-0 bottom-0 w-px bg-[#C9943A]/30 -translate-x-1/2 hidden md:block" />
 
-          <div className="space-y-16">
+          <div className="space-y-20">
             {events.map((ev, i) => (
               <AnimatedSection key={i} delay={0.1} direction={i % 2 === 0 ? 'right' : 'left'}>
-                <div className={`relative grid md:grid-cols-2 gap-8 items-center ${i % 2 === 0 ? '' : ''}`}>
-                  {/* Content left or right */}
-                  <div className={`${i % 2 === 0 ? 'md:text-right md:pr-12' : 'md:col-start-2 md:pl-12'}`}>
+                <div className="relative grid md:grid-cols-2 gap-8 items-center">
+                  {/* Even: text left, image right. Odd: image left, text right */}
+                  <div className={`${i % 2 === 0 ? 'md:text-right md:pr-12' : 'md:col-start-2 md:row-start-1 md:pl-12'}`}>
                     <p className="font-inter text-xs tracking-[0.2em] uppercase text-[#C9943A] mb-2">{ev.period}</p>
                     <h3 className="font-cormorant text-3xl font-medium text-[#2C1810] mb-4">{ev.title}</h3>
                     <p className="font-inter text-sm text-[#2C1810]/70 leading-relaxed">{ev.text}</p>
                   </div>
 
+                  {/* Image panel */}
+                  {ev.img && (
+                    <div className={`overflow-hidden rounded-sm ${i % 2 === 0 ? 'md:col-start-2 md:row-start-1' : 'md:col-start-1 md:row-start-1 md:pr-12'}`}>
+                      <motion.img
+                        src={ev.img}
+                        alt={ev.imgAlt}
+                        className="w-full h-52 object-cover transition-transform duration-700 hover:scale-105"
+                        whileInView={{ opacity: 1 }}
+                        initial={{ opacity: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                        onError={(e) => { e.target.style.display = 'none'; }}
+                      />
+                    </div>
+                  )}
+
                   {/* Gold dot on center line */}
-                  <div className={`absolute left-1/2 top-6 -translate-x-1/2 hidden md:block`}>
+                  <div className="absolute left-1/2 top-6 -translate-x-1/2 hidden md:block">
                     <div className="w-4 h-4 rounded-full bg-[#C9943A] border-4 border-[#FFFEF9] shadow-sm" />
                   </div>
                 </div>
@@ -378,27 +426,24 @@ const BrandStorySection = () => (
           </Link>
         </AnimatedSection>
 
-        {/* Decorative right panel */}
+        {/* Decorative right panel — Mughal arch painting */}
         <AnimatedSection direction="left" delay={0.2}>
           <div className="relative">
-            <div className="border border-[#C9943A]/30 p-10 text-center">
-              <svg viewBox="0 0 300 300" className="w-full max-w-xs mx-auto opacity-60" fill="none">
-                {/* Large decorative mandala */}
-                {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(a => (
-                  <g key={a} transform={`rotate(${a} 150 150)`}>
-                    <line x1="150" y1="150" x2="150" y2="45" stroke="#C9943A" strokeWidth="0.5" />
-                    <ellipse cx="150" cy="75" rx="6" ry="18" stroke="#C9943A" strokeWidth="0.5" />
-                  </g>
-                ))}
-                <circle cx="150" cy="150" r="90" stroke="#C9943A" strokeWidth="0.5" />
-                <circle cx="150" cy="150" r="60" stroke="#C9943A" strokeWidth="0.3" />
-                <circle cx="150" cy="150" r="30" stroke="#C9943A" strokeWidth="0.5" />
-                <circle cx="150" cy="150" r="8" stroke="#C9943A" strokeWidth="1" />
-                <circle cx="150" cy="150" r="3" fill="#C9943A" />
-              </svg>
-              <blockquote className="font-cormorant text-2xl italic text-[#C9943A] font-light mt-6 leading-relaxed">
-                "We do not make clothes. We make heirlooms."
-              </blockquote>
+            <div className="border border-[#C9943A]/30 overflow-hidden">
+              <div className="relative">
+                <img
+                  src="/images/mughal-arch.jpg"
+                  alt="Mughal Architecture"
+                  className="w-full h-80 object-cover opacity-80"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#2C1810] via-[#2C1810]/40 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-8 text-center">
+                  <blockquote className="font-cormorant text-2xl italic text-[#C9943A] font-light leading-relaxed">
+                    "We do not make clothes.<br />We make heirlooms."
+                  </blockquote>
+                </div>
+              </div>
             </div>
           </div>
         </AnimatedSection>
@@ -425,8 +470,13 @@ const Home = () => {
     <>
       {/* ── Hero ── */}
       <section className="relative min-h-screen bg-[#FAF8F4] overflow-hidden grain-overlay flex items-center">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#FAF8F4] via-[#F5F0E8] to-[#EDE5D5]" />
+        {/* Mughal palace miniature background */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/images/mughal-palace.jpg')" }}
+        />
+        {/* Cream overlay to keep the luxury feel and text readable */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FAF8F4]/92 via-[#F5F0E8]/85 to-[#EDE5D5]/90" />
 
         {/* Floating particles */}
         {particlePositions.map(p => (
